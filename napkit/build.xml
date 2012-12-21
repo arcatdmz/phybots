@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+
+<project name="napkit" default="napkit-jar" basedir=".">
+	<import file="../phybots/build.xml"/>
+
+	<!-- ****Properties**** -->
+
+	<!-- Software version -->
+	<property name="napkit.version" value="1.1.1" />
+	<property name="mqoloader.version" value="1.0.0" />
+
+	<!-- Source directory -->
+	<property name="napkit-src.dir" value="../napkit/src" />
+
+	<!-- NyARToolkit directory -->
+	<property name="nyar-src.dir" value="../napkit/lib/NyARToolkit-2.5.2/src" />
+	<property name="nyar-classes.dir" value="../napkit/bin.nyar" />
+
+	<!-- Classes destination directory -->
+	<property name="napkit-classes.dir" value="../napkit/bin" />
+
+	<!-- Javadoc destination -->
+	<property name="napkit-javadoc.dir" value="../napkit/docs" />
+
+	<!-- Jar file name -->
+	<property name="napkit-dist.dir" value="../napkit/dist/" />
+	<property name="napkit-lib.dir" value="lib/" />
+	<property name="napkit-jar.dir" value="${napkit-dist.dir}${napkit-lib.dir}" />
+	<property name="napkit-jar.name" value="napkit-${napkit.version}.jar" />
+
+	<!-- Zip file name -->
+	<property name="napkit-zip.name" value="napkit-${napkit.version}.zip" />
+
+	<!-- MQO loader -->
+	<property name="mqoloader.classes" value="jp/digitalmuseum/jogl/*.class jp/digitalmuseum/utils/MixedDataReader.class" />
+	<property name="mqoloader.codes" value="jp/digitalmuseum/jogl/*.java jp/digitalmuseum/utils/MixedDataReader.java" />
+	<property name="mqoloader.packages" value="jp.digitalmuseum.jogl.*,com.phybots.utils.*" />
+	<property name="mqoloader-javadoc.dir" value="docs.mqoloader" />
+	<property name="mqoloader-jar.name" value="mqoloader-${mqoloader.version}.jar" />
+	<property name="mqoloader-zip.name" value="mqoloader-${mqoloader.version}.zip" />
+
+	<!-- ****Targets**** -->
+
+	<!-- Dependent class paths -->
+	<target name="napkit-classpath" depends="phybots-version">
+		<property name="napkit-classpath" value="../phybots/${phybots-jar.dir}${phybots-jar.name};${capture};${connector};${jogl}" />
+	</target>
+
+	<!-- Zip -->
+	<target name="napkit-zip" depends="napkit-jar">
+		<zip destfile="${napkit-jar.dir}${napkit-zip.name}">
+			<fileset file="${napkit-jar.dir}${napkit-jar.name}" />
+			<fileset dir="./">
+				<include name="LICENSE.txt"/>
+				<include name="README.txt"/>
+			</fileset>
+		</zip>
+	</target>
+
+	<!-- Jar -->
+	<target name="napkit-jar" depends="napkit-compile, napkit-extract">
+		<mkdir dir="${napkit-jar.dir}"/>
+		<jar jarfile="${napkit-jar.dir}${napkit-jar.name}">
+			<fileset dir="${napkit-classes.dir}" includes="**/*.class" excludes="${mqoloader.classes}" />
+			<fileset dir="${nyar-classes.dir}" includes="**/*.class" />
+			<fileset dir="${napkit-classes.dir}" includes="**/*.java" />
+			<fileset dir="${napkit-src.dir}" includes="**/*.java" excludes="${mqoloader.codes}" />
+			<fileset dir="${nyar-src.dir}" includes="**/*.java" />
+		</jar>
+	</target>
+
+	<!-- Zip -->
+	<target name="mqoloader-zip" depends="mqoloader-jar">
+		<zip destfile="${napkit-jar.dir}${mqoloader-zip.name}">
+			<fileset file="${napkit-jar.dir}${mqoloader-jar.name}" />
+			<fileset dir="./">
+				<include name="LICENSE.txt"/>
+				<include name="README_mqoloader.txt"/>
+			</fileset>
+		</zip>
+	</target>
+
+	<!-- Jar -->
+	<target name="mqoloader-jar" depends="napkit-compile, napkit-extract">
+		<mkdir dir="${napkit-jar.dir}"/>
+		<jar jarfile="${napkit-jar.dir}${mqoloader-jar.name}">
+			<fileset dir="${napkit-classes.dir}" includes="${mqoloader.classes}" />
+			<fileset dir="${napkit-src.dir}" includes="${mqoloader.codes}" />
+		</jar>
+	</target>
+
+	<!-- Javadoc -->
+	<target name="mqoloader-javadoc" depends="napkit-extract">
+		<javadoc sourcepath="${napkit-src.dir}"
+			destdir="${mqoloader-javadoc.dir}"
+			packagenames="${mqoloader.packages}"
+			charset="UTF-8"
+			encoding="UTF-8"
+			docencoding="UTF-8"
+			locale="en"
+			windowtitle="MQO loader ${mqoloader.version} API"
+			classpath="${napkit-classes.dir};${jogl}"
+			stylesheetfile="${style}"
+			use="true"
+			bottom="${copyright}">
+		</javadoc>
+	</target>
+
+	<!-- Compile -->
+	<target name="napkit-compile" depends="napkit-classpath, nyar-compile, napkit-extract">
+		<mkdir dir="${napkit-classes.dir}" />
+		<javac srcdir="${napkit-src.dir}" destdir="${napkit-classes.dir}"
+				source="1.5"
+				target="1.5"
+				optimize="on"
+				classpath="${napkit-classpath};${nyar-classes.dir}" encoding="UTF-8" />
+	</target>
+
+	<!-- Compile -->
+	<target name="nyar-compile">
+		<mkdir dir="${nyar-classes.dir}" />
+		<javac srcdir="${nyar-src.dir}" destdir="${nyar-classes.dir}"
+				source="1.5"
+				target="1.5"
+				optimize="on"
+				encoding="UTF-8" />
+	</target>
+
+	<!-- Extract -->
+	<target name="napkit-extract">
+		<unjar src="../phybots/${phybots-jar.dir}${phybots-jar-utils.name}" dest="${napkit-classes.dir}" />
+	</target>
+
+	<!-- Javadoc -->
+	<target name="napkit-javadoc" depends="napkit-classpath, napkit-extract">
+		<javadoc sourcepath="${napkit-src.dir};${nyar-src.dir}"
+			destdir="${napkit-javadoc.dir}"
+			packagenames="jp.digitalmuseum.*"
+			charset="UTF-8"
+			encoding="UTF-8"
+			docencoding="UTF-8"
+			locale="en"
+			classpath="${napkit-classpath};${nyar-classes.dir};${jogl}"
+			stylesheetfile="../phybots/${style}"
+			bottom="${copyright}" />
+	</target>
+
+	<!-- Cleaning -->
+	<target name="napkit-clean">
+		<delete dir="${napkit-classes.dir}" />
+		<delete dir="${nyar-classes.dir}" />
+		<delete dir="${napkit-javadoc.dir}" />
+		<delete dir="${mqoloader-javadoc.dir}" />
+		<delete dir="${napkit-dist.dir}" />
+	</target>
+</project>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="src.sample"/>
+	<classpathentry kind="src" path="lib/NyARToolkit-2.5.2/src"/>
+	<classpathentry kind="src" path="src.test"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/capture"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/connector"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/phybots"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/jogl-1.1.1a/gluegen-rt.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="napkit/lib/jogl-1.1.1a"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/jogl-1.1.1a/jogl.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="napkit/lib/jogl-1.1.1a"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/objimport/objimport.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="http://www.pixelnerve.com/processing/libraries/objimport/reference/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/p5/core.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
