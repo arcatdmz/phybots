@@ -14,7 +14,7 @@
 			<zipfileset dir="${connector-bluecove.dir}"
 					includes="${connector-bluecove.file}" />
 
-			<!-- RXTX library for Windows x64 -->
+			<!-- RXTX library for Windows x64 not bundled. -->
 			<!--
 			<zipfileset dir="${connector-rxtxlib.dir}"
 					includes="README.txt" fullpath="README_rxtx.txt" />
@@ -22,7 +22,7 @@
 					includes="${connector-rxtxlib.file} *.dll" />
 			-->
 
-			<!-- RXTX library for Windows/Mac/Linux x86 -->
+			<!-- RXTX library for Windows/Mac/Linux x86 not bundled. -->
 			<!--
 			<zipfileset dir="${connector-rxtxlib.x86.dir}"
 					includes="README.txt" fullpath="README_rxtx.txt" />
@@ -36,6 +36,8 @@
 					includes="LICENSE.txt" fullpath="LICENSE_connector.txt" />
 			<zipfileset dir="../connector/"
 					includes="${connector-jar.name}" />
+
+			<!-- DirectShow for Java (Windows) or JMF (Linux) not bundled. -->
 
 			<zipfileset dir="../capture/"
 					includes="README.txt" fullpath="README_capture.txt" />
@@ -52,21 +54,21 @@
 					includes="${phybots-jar.name}" />
 			<zipfileset dir="${phybots-dist.dir}"
 					includes="${javadoc-zip.name}" />
-			<!--
-			<zipfileset dir="../phybots/"
-					includes="${phybots-javadoc.dir}/**/*" />
-			-->
 
 			<zipfileset dir="../napkit/"
 					includes="README.txt" fullpath="README_napkit.txt" />
 			<zipfileset dir="../napkit/"
 					includes="README_mqoloader.txt" fullpath="README_mqoloader.txt" />
-			<zipfileset dir="../napkit/"
-					includes="${napkit-jar.name}" />
+			<zipfileset dir="../napkit/markers/"
+					includes="README.txt" fullpath="README_patt.txt" />
 			<zipfileset dir="../napkit/"
 					includes="LICENSE.txt" fullpath="LICENSE_napkit.txt" />
 			<zipfileset dir="../napkit/"
+					includes="${napkit-jar.name}" />
+			<zipfileset dir="../napkit/"
 					includes="${mqoloader-jar.name}" />
+			<zipfileset dir="../napkit/markers/"
+					includes="patt.zip" />
 		</zip>
 	</target>
 
@@ -82,22 +84,6 @@
 					includes="README.txt" fullpath="library/README_bluecove.txt" />
 			<zipfileset dir="${connector-bluecove.dir}"
 					includes="${connector-bluecove.file}" prefix="library/" />
-
-			<!-- RXTX library for Windows x64 -->
-			<!--
-			<zipfileset dir="${connector-rxtxlib.dir}"
-					includes="README.txt" fullpath="library/README_rxtx.txt" />
-			<zipfileset dir="${connector-rxtxlib.dir}"
-					includes="${connector-rxtxlib.file} *.dll" prefix="library/" />
-			-->
-
-			<!-- RXTX library for Windows/Mac/Linux x86 -->
-			<!--
-			<zipfileset dir="${connector-rxtxlib.x86.dir}"
-					includes="README.txt" fullpath="library/README_rxtx.txt" />
-			<zipfileset dir="${connector-rxtxlib.dir}"
-					includes="${connector-rxtxlib.file} *.dll *.so *.jnilib" prefix="library/" />
-			-->
 
 			<zipfileset dir="../connector/"
 					includes="README.txt" fullpath="library/README_connector.txt" />
@@ -119,8 +105,6 @@
 					includes="LICENSE.txt" fullpath="library/LICENSE_phybots.txt" />
 			<zipfileset dir="../phybots/"
 					includes="${phybots-jar.name}" prefix="library/" />
-			<zipfileset dir="../phybots/"
-					includes="${phybots-jar-p5.name}" prefix="library/" />
 			<zipfileset dir="../phybots/${phybots-javadoc.dir}"
 					includes="**/*" prefix="reference/" />
 
@@ -134,15 +118,19 @@
 					includes="**/*" prefix="src/" />
 
 			<zipfileset dir="../napkit/"
-					includes="README.txt" fullpath="library/README_napkit.txt" />
+					includes="README.txt" fullpath="README_napkit.txt" />
 			<zipfileset dir="../napkit/"
-					includes="README_mqoloader.txt" fullpath="library/README_mqoloader.txt" />
+					includes="README_mqoloader.txt" fullpath="README_mqoloader.txt" />
+			<zipfileset dir="../napkit/markers/"
+					includes="README.txt" fullpath="README_patt.txt" />
+			<zipfileset dir="../napkit/"
+					includes="LICENSE.txt" fullpath="LICENSE_napkit.txt" />
 			<zipfileset dir="../napkit/"
 					includes="${napkit-jar.name}" prefix="library/" />
 			<zipfileset dir="../napkit/"
 					includes="${mqoloader-jar.name}" prefix="library/" />
-			<zipfileset dir="../napkit/"
-					includes="LICENSE.txt" fullpath="library/LICENSE_napkit.txt" />
+			<zipfileset dir="../napkit/markers/"
+					includes="patt.zip" />
 		</zip>
 	</target>
 </project>

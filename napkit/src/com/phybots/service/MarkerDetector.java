@@ -122,7 +122,7 @@ public class MarkerDetector extends ScreenLocationProviderAbstractImpl implement
 			detector.setSize(imageProvider.getWidth(), imageProvider.getHeight());
 		}
 		if (imageProvider instanceof CoordProvider) {
-			setCoordsProvider((CoordProvider) imageProvider);
+			setCoordProvider((CoordProvider) imageProvider);
 		}
 		distributeEvent(new ServiceUpdateEvent(this, "imageProvider", imageProvider));
 	}
@@ -160,7 +160,7 @@ public class MarkerDetector extends ScreenLocationProviderAbstractImpl implement
 		return cameraRelation != null;
 	}
 
-	public void setCoordsProvider(CoordProvider coordProvider) {
+	public void setCoordProvider(CoordProvider coordProvider) {
 		this.coordProvider = coordProvider;
 		distributeEvent(new ServiceUpdateEvent(this, "coord provider", coordProvider));
 	}
