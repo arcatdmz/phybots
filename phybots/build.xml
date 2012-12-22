@@ -35,9 +35,7 @@
 	<property name="copyright" value="&lt;center&gt;Copyright by Jun Kato at &lt;a href=&quot;http://phybots.com/&quot;&gt;http://phybots.com/&lt;/a&gt;&lt;/center&gt;" />
 
 	<!-- Jar file name -->
-	<property name="phybots-dist.dir" value="dist/" />
-	<property name="phybots-lib.dir" value="lib/" />
-	<property name="phybots-jar.dir" value="${phybots-dist.dir}${phybots-lib.dir}" />
+	<property name="phybots-dist.dir" value="../dist/" />
 	<property name="phybots-jar.basename" value="phybots-core-${phybots.version}" />
 	<property name="phybots-jar-p5.name" value="PhybotsP5.jar" />
 	<property name="phybots-jar-utils.name" value="phybots-utils-${phybots.version}.jar" />
@@ -84,9 +82,9 @@
 
 	<!-- Zip -->
 	<target name="phybots-zip" depends="jar">
-		<zip destfile="${phybots-dist.dir}${phybots-zip.name}">
-			<fileset file="${phybots-jar.dir}${phybots-jar.name}" />
-			<fileset dir="./">
+		<zip destfile="${phybots-zip.name}">
+			<fileset file="${phybots-jar.name}" />
+			<fileset dir="../">
 				<include name="LICENSE.txt"/>
 				<include name="README.txt"/>
 			</fileset>
@@ -95,8 +93,7 @@
 
 	<!-- Jar -->
 	<target name="jar" depends="compile, extract, phybots-version">
-		<mkdir dir="${phybots-jar.dir}" />
-		<jar jarfile="${phybots-jar.dir}${phybots-jar.name}">
+		<jar jarfile="${phybots-jar.name}">
 			<fileset dir="${phybots-classes.dir}" includes="**/*.class" />
 			<fileset dir="${phybots-src.dir}" includes="**/*.java **/*.properties" />
 			<fileset dir="${phybots-src-core.dir}" includes="**/*.java **/*.properties" />
@@ -108,7 +105,7 @@
 
 	<!-- Jar (for Processing) -->
 	<target name="jar-p5" depends="compile-p5">
-		<jar jarfile="${phybots-jar.dir}${phybots-jar-p5.name}">
+		<jar jarfile="${phybots-jar-p5.name}">
 			<fileset dir="${phybots-classes-p5.dir}" includes="**/*.class" />
 			<fileset dir="${phybots-src-p5.dir}" includes="**/*.java" />
 		</jar>
@@ -116,7 +113,7 @@
 
 	<!-- Jar (utility classes only) -->
 	<target name="jar-utils" depends="compile">
-		<jar jarfile="${phybots-jar.dir}${phybots-jar-utils.name}">
+		<jar jarfile="${phybots-jar-utils.name}">
 			<fileset dir="${phybots-classes.dir}" includes="com/phybots/utils/*.class" />
 			<fileset dir="${phybots-src.dir}" includes="com/phybots/utils/*.java" />
 			<fileset dir="${phybots-src-core.dir}" includes="com/phybots/utils/*.java" />
@@ -175,6 +172,9 @@
 	<target name="clean">
 		<delete dir="${phybots-classes.dir}" />
 		<delete dir="${phybots-javadoc.dir}" />
-		<delete dir="${phybots-dist.dir}" />
+		<delete file="${phybots-jar.name}" />
+		<delete file="${phybots-jar-p5.name}" />
+		<delete file="${phybots-jar-util.name}" />
+		<delete file="${phybots-zip.name}" />
 	</target>
 </project>

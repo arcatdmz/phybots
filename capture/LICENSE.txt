@@ -1,4 +1,4 @@
-Webcam capture package - capture
+capture - a webcam capture package for Windows/Mac/Linux
 Copyright (C) 2010 Jun KATO
 
 The contents of this file are subject to the Mozilla Public License Version

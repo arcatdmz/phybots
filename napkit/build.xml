@@ -23,9 +23,6 @@
 	<property name="napkit-javadoc.dir" value="../napkit/docs" />
 
 	<!-- Jar file name -->
-	<property name="napkit-dist.dir" value="../napkit/dist/" />
-	<property name="napkit-lib.dir" value="lib/" />
-	<property name="napkit-jar.dir" value="${napkit-dist.dir}${napkit-lib.dir}" />
 	<property name="napkit-jar.name" value="napkit-${napkit.version}.jar" />
 
 	<!-- Zip file name -->
@@ -43,13 +40,13 @@
 
 	<!-- Dependent class paths -->
 	<target name="napkit-classpath" depends="phybots-version">
-		<property name="napkit-classpath" value="../phybots/${phybots-jar.dir}${phybots-jar.name};${capture};${connector};${jogl}" />
+		<property name="napkit-classpath" value="../phybots/${phybots-jar.name};${capture};${connector};${jogl}" />
 	</target>
 
 	<!-- Zip -->
 	<target name="napkit-zip" depends="napkit-jar">
-		<zip destfile="${napkit-jar.dir}${napkit-zip.name}">
-			<fileset file="${napkit-jar.dir}${napkit-jar.name}" />
+		<zip destfile="${napkit-zip.name}">
+			<fileset file="${napkit-jar.name}" />
 			<fileset dir="./">
 				<include name="LICENSE.txt"/>
 				<include name="README.txt"/>
@@ -59,8 +56,7 @@
 
 	<!-- Jar -->
 	<target name="napkit-jar" depends="napkit-compile, napkit-extract">
-		<mkdir dir="${napkit-jar.dir}"/>
-		<jar jarfile="${napkit-jar.dir}${napkit-jar.name}">
+		<jar jarfile="${napkit-jar.name}">
 			<fileset dir="${napkit-classes.dir}" includes="**/*.class" excludes="${mqoloader.classes}" />
 			<fileset dir="${nyar-classes.dir}" includes="**/*.class" />
 			<fileset dir="${napkit-classes.dir}" includes="**/*.java" />
@@ -71,8 +67,8 @@
 
 	<!-- Zip -->
 	<target name="mqoloader-zip" depends="mqoloader-jar">
-		<zip destfile="${napkit-jar.dir}${mqoloader-zip.name}">
-			<fileset file="${napkit-jar.dir}${mqoloader-jar.name}" />
+		<zip destfile="${mqoloader-zip.name}">
+			<fileset file="${mqoloader-jar.name}" />
 			<fileset dir="./">
 				<include name="LICENSE.txt"/>
 				<include name="README_mqoloader.txt"/>
@@ -82,8 +78,7 @@
 
 	<!-- Jar -->
 	<target name="mqoloader-jar" depends="napkit-compile, napkit-extract">
-		<mkdir dir="${napkit-jar.dir}"/>
-		<jar jarfile="${napkit-jar.dir}${mqoloader-jar.name}">
+		<jar jarfile="${mqoloader-jar.name}">
 			<fileset dir="${napkit-classes.dir}" includes="${mqoloader.classes}" />
 			<fileset dir="${napkit-src.dir}" includes="${mqoloader.codes}" />
 		</jar>
@@ -128,7 +123,7 @@
 
 	<!-- Extract -->
 	<target name="napkit-extract">
-		<unjar src="../phybots/${phybots-jar.dir}${phybots-jar-utils.name}" dest="${napkit-classes.dir}" />
+		<unjar src="../phybots/${phybots-jar-utils.name}" dest="${napkit-classes.dir}" />
 	</target>
 
 	<!-- Javadoc -->
@@ -151,6 +146,9 @@
 		<delete dir="${nyar-classes.dir}" />
 		<delete dir="${napkit-javadoc.dir}" />
 		<delete dir="${mqoloader-javadoc.dir}" />
-		<delete dir="${napkit-dist.dir}" />
+		<delete file="${napkit-jar.name}" />
+		<delete file="${napkit-zip.name}" />
+		<delete file="${mqoloader-jar.name}" />
+		<delete file="${mqoloader-zip.name}" />
 	</target>
 </project>

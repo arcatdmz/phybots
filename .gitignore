@@ -1,0 +1,12 @@
+capture/bin/
+capture/p5/bin/
+capture/lib/dsj/dsj.jar
+capture/lib/jmf/jmf.jar
+capture/lib/qtj/QTJava.zip
+connector/bin/
+phybots/bin/
+phybots/bin.p5/
+phybots/docs/
+napkit/bin/
+napkit/bin.nyar/
+.DS_Store

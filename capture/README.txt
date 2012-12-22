@@ -60,5 +60,5 @@ To learn about Java Media Framework, please see:
 http://java.sun.com/javase/technologies/desktop/media/jmf/
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-http://mr.digitalmuseum.jp/
+http://phybots.com/
 arc (at) digitalmuseum.jp
