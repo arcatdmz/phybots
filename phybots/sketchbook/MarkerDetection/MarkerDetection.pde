@@ -1,14 +1,8 @@
+import com.phybots.*;
 import com.phybots.p5.*;
-import com.phybots.p5.andy.*;
-
-import com.phybots.hakoniwa.*;
 import com.phybots.service.*;
-
-import com.phybots.Phybots;
-import com.phybots.utils.ScreenPosition;
-import com.phybots.utils.ScreenRectangle;
-import jp.digitalmuseum.napkit.NapMarker;
-import jp.digitalmuseum.napkit.NapDetectionResult;
+import com.phybots.utils.*;
+import jp.digitalmuseum.napkit.*;
 
 Camera camera;
 PhybotsImage img;
@@ -23,7 +17,7 @@ void setup()
   img = new PhybotsImage(camera);
 
   // Start marker detection.
-  marker = new NapMarker("4x4_45.patt", 55);
+  marker = new NapMarker(dataPath("4x4_45.patt"), 55);
   md = new MarkerDetector();
   md.setImageProvider(camera);
   md.addMarker(marker);
