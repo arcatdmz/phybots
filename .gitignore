@@ -1,7 +1,7 @@
 capture/bin/
 capture/p5/bin/
 capture/lib/dsj/dsj.jar
-capture/lib/jmf/jmf.jar
+capture/lib/dsj/dsj.dll
 capture/lib/qtj/QTJava.zip
 connector/bin/
 phybots/bin/
