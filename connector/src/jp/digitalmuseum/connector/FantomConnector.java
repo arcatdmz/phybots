@@ -37,89 +37,97 @@
 package jp.digitalmuseum.connector;
 
 import java.io.IOException;
-import java.net.Socket;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import lejos.pc.comm.NXTCommFantom;
 
 
-public final class SocketConnector extends ConnectorAbstractImpl {
-	private static final long serialVersionUID = -2742909372817735417L;
-	final public static String CON_PREFIX2 = "http://";
-	final public static String CON_PREFIX = "tcp:";
-	final public static int DEFAULT_PORT = 80;
-	private transient Socket socket;
-	private String host;
-	private int port;
+public class FantomConnector extends ConnectorAbstractImpl {
+	private static final long serialVersionUID = 2928595120975023381L;
+	final public static String CON_PREFIX = "fantom:";
+	private transient NXTCommFantom fantom;
+	private String portName;
 
-	public SocketConnector(String con) {
+	public FantomConnector(String con) {
+		fantom = new NXTCommFantom();
+		setInputStream(new FantomInputStream());
+		setOutputStream(new FantomOutputStream());
 		parseConnectionString(con);
-		if (host == null) {
-			throw new IllegalArgumentException();
+	}
+
+	public static String[] queryIdentifiers() {
+		NXTCommFantom fantom = new NXTCommFantom();
+		String[] identifiers = fantom.find();
+		for (int i = 0; i < identifiers.length; i ++) {
+			identifiers[i] = CON_PREFIX + identifiers[i];
 		}
+		return identifiers;
 	}
 
 	private void parseConnectionString(String con) {
 
 		// Remove prefix.
 		if (con.toLowerCase().startsWith(CON_PREFIX)) {
-			parseConnectionString(con.substring(CON_PREFIX.length()));
-			return;
-		}
-		if (con.toLowerCase().startsWith(CON_PREFIX2)) {
-			parseConnectionString(con.substring(CON_PREFIX2.length()));
-			return;
-		}
-
-		// Check port.
-		final String[] addrs = con.split(":");
-		if (addrs.length <= 2) {
-			host = addrs[0];
-			port = addrs.length > 1 ?
-					Integer.parseInt(addrs[1]) : DEFAULT_PORT;
+			portName = con.substring(CON_PREFIX.length());
+		} else {
+			portName = con;
 		}
 	}
 
+	@Override
+	public String getConnectionString() {
+		return CON_PREFIX + portName;
+	}
+
+	@Override
 	public boolean connect() {
+		return fantom.open(portName);
+	}
 
-		if (isConnected()) {
-			return true;
-		}
-
-		// Open a connection.
-		try {
-			socket = new Socket(host, port);
-			setOutputStream(socket.getOutputStream());
-			setInputStream(socket.getInputStream());
-		} catch (IOException e) {
-			return false;
-		}
-		return true;
+	@Override
+	public boolean isConnected() {
+		return fantom.isConnected();
 	}
 
 	public void disconnect() {
 		super.disconnect();
-		try {
-			if (isConnected()) {
-				socket.close();
+		fantom.close();
+	}
+
+	public class FantomInputStream extends InputStream {
+		@Override
+		public int read() throws IOException {
+			byte[] data = new byte[1];
+			if (fantom.readData(data, 0, 1) < 0) {
+				return -1;
 			}
-		} catch (IOException e) {
-			// Do nothing.
+			else return data[0];
 		}
-		socket = null;
+		@Override
+		public int read(byte[] data, int offset, int len) {
+			return fantom.readData(data, offset, len);
+		}
+		@Override
+		public void close() throws IOException {
+			FantomConnector.this.disconnect();
+		}
 	}
 
-	public boolean isConnected() {
-		return socket != null;
+	public class FantomOutputStream extends OutputStream {
+		@Override
+		public void write(int b) throws IOException {
+			write(new byte[] { (byte) b }, 0, 1);
+			flush();
+		}
+		@Override
+		public void write(byte[] data, int offset, int len) throws IOException {
+			fantom.sendData(data, offset, len);
+			flush();
+		}
+		@Override
+		public void close() throws IOException {
+			FantomConnector.this.disconnect();
+		}
 	}
-
-	public String getHost() {
-		return host;
-	}
-
-	public int getPort() {
-		return port;
-	}
-
-	public String getConnectionString() {
-		return CON_PREFIX+host+":"+port;
-	}
-
 }

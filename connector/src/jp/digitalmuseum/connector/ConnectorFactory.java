@@ -1,5 +1,5 @@
 /*
- * PROJECT: connector at http://digitalmuseum.jp/en/software/
+ * PROJECT: Phybots at http://phybots.com/
  * ----------------------------------------------------------------------------
  *
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
@@ -14,11 +14,11 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is connector.
+ * The Original Code is Phybots.
  *
- * The Initial Developer of the Original Code is Jun Kato.
+ * The Initial Developer of the Original Code is Jun KATO.
  * Portions created by the Initial Developer are
- * Copyright (C) 2009 Jun Kato. All Rights Reserved.
+ * Copyright (C) 2009-2013 Jun Kato. All Rights Reserved.
  *
  * Contributor(s): Jun Kato
  *
@@ -48,6 +48,9 @@ public class ConnectorFactory {
 		} else if (addr.startsWith(
 				RXTXConnector.CON_PREFIX.toLowerCase())) {
 			connector = new RXTXConnector(addr);
+		} else if (addr.startsWith(
+				FantomConnector.CON_PREFIX.toLowerCase())) {
+			connector = new FantomConnector(addr);
 		} else {
 			connector = new SocketConnector(addr);
 		}

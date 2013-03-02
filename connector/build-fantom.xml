@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="fantom" default="fantom-jar" basedir=".">
+
+	<!-- ****Properties**** -->
+
+	<!-- Source directory -->
+	<property name="fantom-src.dir" value="src.fantom" />
+
+	<!-- Classes destination directory -->
+	<property name="fantom-classes.dir" value="bin.fantom" />
+
+	<!-- Jar file name -->
+	<property name="fantom-jar.name" value="fantom.jar" />
+
+	<!-- Source directory -->
+	<property name="fantom-native.dir" value="lib/jfantom" />
+
+	<!-- ****Targets**** -->
+
+	<!-- Jar -->
+	<target name="fantom-jar" depends="fantom-compile">
+		<jar jarfile="${fantom-jar.name}">
+			<fileset dir="${fantom-classes.dir}" includes="**/*.class" />
+			<fileset dir="${fantom-src.dir}" includes="**/*.java" />
+			<fileset dir="${fantom-native.dir}" includes="**/*" />
+		</jar>
+		<delete dir="${fantom-classes.dir}" />
+	</target>
+
+	<!-- Compile -->
+	<target name="fantom-compile">
+		<mkdir dir="${fantom-classes.dir}" />
+		<javac srcdir="${fantom-src.dir}" destdir="${fantom-classes.dir}"
+				target="1.5"
+				source="1.5"
+				optimize="on"
+				encoding="UTF-8" />
+	</target>
+
+	<!-- Clean -->
+	<target name="fantom-clean">
+		<delete dir="${fantom-classes.dir}" />
+		<delete>
+			<fileset dir="./" includes="${fantom-jar.name}" />
+		</delete>
+	</target>
+</project>
