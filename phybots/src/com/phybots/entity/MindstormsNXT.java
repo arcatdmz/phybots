@@ -232,7 +232,7 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 	}
 
 	/**
-	 * @see #setOutputState(int, byte, int, int, int, int, int, Connector)
+	 * @see #setOutputState(int, byte, int, int, int, int, long, Connector)
 	 */
 	protected boolean setOutputState(final int port,
 			final byte power, final int mode,
@@ -328,7 +328,7 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 			// Wait for the latency and read the response.
 			try {
 				Thread.sleep(30);
-				ret = read(connector);
+				ret = read(connector, 25);
 			} catch (Exception e) {
 				outputState.status = -1;
 				return;
@@ -373,8 +373,8 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 
 			// Wait for the latency and read the response.
 			try {
-				Thread.sleep(30);
-				ret = read(connector);
+				Thread.sleep(100);
+				ret = read(connector, 7);
 			} catch (Exception e) {
 				return false;
 			}
@@ -405,11 +405,12 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 		return connector.write(buf);
 	}
 
-	protected static byte[] read(final Connector connector) throws IOException {
+	protected static byte[] read(final Connector connector, int length) throws IOException {
 		final InputStream inStream = connector.getInputStream();
 		byte[] reply = null;
-		int length = -1;
-		length = (inStream.read() & 0xff) | ((inStream.read() & 0xff << 8));
+		if (connector instanceof BluetoothConnector) {
+			length = (inStream.read() & 0xff) | ((inStream.read() & 0xff << 8));
+		}
 		reply = new byte[length];
 		while (length > 0) {
 			length -= inStream.read(reply,
@@ -453,7 +454,7 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 				// Get the result.
 				byte[] ret;
 				try {
-					ret = read(getConnector());
+					ret = read(getConnector(), 5);
 					if (ret != null &&
 							ret.length == 5 &&
 							ret[1] == GET_BATTERY_LEVEL &&
@@ -506,7 +507,7 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 		}
 
 		/**
-		 * @see MindstormsNXT#setOutputState(int, byte, int, int, int, int, int, Connector)
+		 * @see MindstormsNXT#setOutputState(int, byte, int, int, int, int, long, Connector)
 		 */
 		public boolean setOutputState(
 				byte power,

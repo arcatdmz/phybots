@@ -5,10 +5,9 @@ import java.util.Random;
 import java.util.Stack;
 
 /**
- * A top-down splay tree based on Danny Sleator's implementation.
+ * A top-down splay tree based on <a href="ftp://ftp.cs.cmu.edu/user/sleator/splaying/SplayTree.java">Danny Sleator's implementation</a>.
  *
  * @param <T> Type of elements of the tree.
- * @see {@link ftp://ftp.cs.cmu.edu/user/sleator/splaying/SplayTree.java}
  */
 public class SplayTree<T> implements Cloneable {
 	private BinaryNode<T> root;

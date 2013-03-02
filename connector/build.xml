@@ -2,10 +2,12 @@
 
 <project name="connector" default="connector-jar" basedir=".">
 
+	<import file="../connector/build-fantom.xml"/>
+
 	<!-- ****Properties**** -->
 
 	<!-- Software version -->
-	<property name="connector-version" value="1.0.4" />
+	<property name="connector-version" value="1.0.5" />
 
 	<!-- Dependent class pathes -->
 	<property name="connector-bluecove.dir" value="../connector/lib/bluecove/" />
@@ -15,7 +17,7 @@
 	<property name="connector-rxtxlib.x86.dir" value="../connector/lib/rxtx-2.2pre2-x86/" />
 	<property name="connector-rxtxlib.file" value="RXTXcomm.jar" />
 	<property name="connector-rxtxlib" value="${connector-rxtxlib.dir}${connector-rxtxlib.file}" />
-	<property name="connector-classpath" value="${connector-bluecove};${connector-rxtxlib}" />
+	<property name="connector-classpath" value="${connector-bluecove};${connector-rxtxlib};${fantom.dir}${fantom-jar.name}" />
 
 	<!-- Source directory -->
 	<property name="connector-src.dir" value="src" />
@@ -35,10 +37,11 @@
 	<!-- ****Targets**** -->
 
 	<!-- Zip -->
-	<target name="connector-zip" depends="connector-jar">
+	<target name="connector-zip" depends="connector-jar, fantom-jar">
 		<zip destfile="${connector-zip.name}">
 			<fileset dir="./">
 				<include name="${connector-jar.name}"/>
+				<include name="${fantom-jar.name}" />
 				<include name="LICENSE.txt"/>
 				<include name="README.txt"/>
 			</fileset>
@@ -54,7 +57,7 @@
 	</target>
 
 	<!-- Compile -->
-	<target name="connector-compile">
+	<target name="connector-compile" depends="fantom-jar">
 		<mkdir dir="${connector-classes.dir}" />
 		<javac srcdir="${connector-src.dir}" destdir="${connector-classes.dir}"
 				target="1.5"

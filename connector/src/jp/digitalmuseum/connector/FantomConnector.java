@@ -59,9 +59,10 @@ public class FantomConnector extends ConnectorAbstractImpl {
 	public static String[] queryIdentifiers() {
 		NXTCommFantom fantom = new NXTCommFantom();
 		String[] identifiers = fantom.find();
-		for (int i = 0; i < identifiers.length; i ++) {
-			identifiers[i] = CON_PREFIX + identifiers[i];
-		}
+		if (identifiers != null)
+			for (int i = 0; i < identifiers.length; i ++) {
+				identifiers[i] = CON_PREFIX + identifiers[i];
+			}
 		return identifiers;
 	}
 
@@ -82,6 +83,9 @@ public class FantomConnector extends ConnectorAbstractImpl {
 
 	@Override
 	public boolean connect() {
+		if (fantom.isConnected()) {
+			return true;
+		}
 		return fantom.open(portName);
 	}
 
@@ -92,7 +96,9 @@ public class FantomConnector extends ConnectorAbstractImpl {
 
 	public void disconnect() {
 		super.disconnect();
-		fantom.close();
+		if (fantom.isConnected()) {
+			fantom.close();
+		}
 	}
 
 	public class FantomInputStream extends InputStream {

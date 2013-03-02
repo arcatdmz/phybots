@@ -40,15 +40,15 @@ public class ConnectorFactory {
 
 	public static Connector makeConnector(String addr) {
 		Connector connector;
-		addr = addr.toLowerCase();
+		String addrLc = addr.toLowerCase();
 
-		if (addr.startsWith(
+		if (addrLc.startsWith(
 				BluetoothConnector.CON_PREFIX.toLowerCase())) {
 			connector = new BluetoothConnector(addr);
-		} else if (addr.startsWith(
+		} else if (addrLc.startsWith(
 				RXTXConnector.CON_PREFIX.toLowerCase())) {
 			connector = new RXTXConnector(addr);
-		} else if (addr.startsWith(
+		} else if (addrLc.startsWith(
 				FantomConnector.CON_PREFIX.toLowerCase())) {
 			connector = new FantomConnector(addr);
 		} else {

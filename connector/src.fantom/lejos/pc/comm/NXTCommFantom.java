@@ -37,7 +37,7 @@ public class NXTCommFantom {
 		File file = getLibraryFile(libFileName);
 		if (file == null) {
 			// Copy contents of the jfantom library to the temporary file.
-			file = createTempFile();
+			file = createTempFile(libFileName);
 			InputStream is = getClass().getClassLoader()
 					.getResourceAsStream(libFileName);
 			if (!saveAsFile(is, file)) return false;
@@ -77,7 +77,15 @@ public class NXTCommFantom {
 
 	private static File getLibraryFile(String libFileName) {
 		String userDir = System.getProperty("user.dir");
-		File libFile = new File(userDir +
+		File libFile;
+		libFile = new File(userDir +
+				File.separator + "lib" +
+				File.separator + "jfantom" +
+				File.separator + libFileName);
+		if (libFile.exists()) return libFile;
+		libFile = new File(userDir +
+				File.separator + ".." +
+				File.separator + "connector" +
 				File.separator + "lib" +
 				File.separator + "jfantom" +
 				File.separator + libFileName);
@@ -85,13 +93,16 @@ public class NXTCommFantom {
 		return null;
 	}
 
-	private static File createTempFile() {
+	private static File createTempFile(String libFileName) {
 		File file;
 		try {
-			file = File.createTempFile("temp", Long.toString(System.nanoTime()));
-		} catch (IOException e) {
+			File dir = createTempDir();
+			libFileName = libFileName.substring(
+					libFileName.lastIndexOf('/') + 1);
+			file = new File(dir, libFileName);
+		} catch (IllegalStateException e) {
 			System.err.println(
-					"Failed to create a temporary file for the jfantom library");
+					"Failed to create a temporary directory for the jfantom library");
 			return null;
 		}
 		try {
@@ -103,6 +114,23 @@ public class NXTCommFantom {
 			return null;
 		}
 		return file;
+	}
+
+	private static final int TEMP_DIR_ATTEMPTS = 10;
+	public static File createTempDir() {
+		File baseDir = new File(System.getProperty("java.io.tmpdir"));
+		String baseName = System.currentTimeMillis() + "-";
+
+		for (int counter = 0; counter < TEMP_DIR_ATTEMPTS; counter++) {
+			File tempDir = new File(baseDir, baseName + counter);
+			if (tempDir.mkdir()) {
+				tempDir.deleteOnExit();
+				return tempDir;
+			}
+		}
+		throw new IllegalStateException("Failed to create directory within "
+				+ TEMP_DIR_ATTEMPTS + " attempts (tried " + baseName + "0 to "
+				+ baseName + (TEMP_DIR_ATTEMPTS - 1) + ')');
 	}
 
 	private static boolean saveAsFile(InputStream is, File fd) {
@@ -153,7 +181,12 @@ public class NXTCommFantom {
 			}
 			byte[] data = new byte[7];
 			int recv = f.jfantom_read_data(nxt, data, 0, 7);
-			System.out.println(String.format("received %d bytes", recv));
+			System.out.print(String.format("received %d bytes:", recv));
+			for (byte b : data) {
+				System.out.print(" ");
+				System.out.print(b);
+			}
+			System.out.println();
 			f.jfantom_close(nxt);
 		}
 
@@ -180,7 +213,11 @@ public class NXTCommFantom {
 			}
 			byte[] data = new byte[7];
 			int recv = f.readData(data, 0, 7);
-			System.out.println(String.format("received %d bytes", recv));
+			System.out.print(String.format("received %d bytes:", recv));
+			for (byte b : data) {
+				System.out.print(" ");
+				System.out.print(b);
+			}
 			f.close();
 		}
 	}
@@ -196,6 +233,9 @@ public class NXTCommFantom {
 
 	private native long jfantom_open(String nxt);
 	public boolean open(String connectionString) {
+		if (nxt != 0) {
+			close();
+		}
 		nxt = jfantom_open(connectionString);
 		return nxt != 0;
 	}
@@ -204,6 +244,7 @@ public class NXTCommFantom {
 	public boolean close() {
 		if (nxt == 0) return false;
 		jfantom_close(nxt);
+		nxt = 0;
 		return true;
 	}
 

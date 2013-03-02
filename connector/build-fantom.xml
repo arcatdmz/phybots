@@ -14,7 +14,8 @@
 	<property name="fantom-jar.name" value="fantom.jar" />
 
 	<!-- Source directory -->
-	<property name="fantom-native.dir" value="lib/jfantom" />
+	<property name="fantom.dir" value="../connector/" />
+	<property name="fantom-native.dir" value="${fantom.dir}lib/jfantom" />
 
 	<!-- ****Targets**** -->
 

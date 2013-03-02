@@ -1,7 +1,7 @@
 Phybots - a toolkit for making robotic things
-Copyright (C) 2012 Jun KATO
+Copyright (C) 2013 Jun KATO
 
-version 1.0.0 for Processing
+version 1.0.1 for Processing
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 "Phybots" is a Java toolkit to prototype "robotic things."
@@ -11,6 +11,7 @@ triple license, except for the bundled libraries:
 
 "napkit" GNU GPLv3
 "bluecove" Apache v2
+"jfantom" MPL v1
 
 All source files which are not included in "src" directory can
 be found in each jar files. Please extract them or visit our

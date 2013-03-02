@@ -37,10 +37,13 @@ package robot.mindstorms;
  */
 
 
+import robot.RobotInfo;
+
 import com.phybots.Phybots;
 import com.phybots.entity.MindstormsNXT;
 import com.phybots.entity.MindstormsNXT.MindstormsNXTExtension;
 import com.phybots.entity.MindstormsNXT.Port;
+import com.phybots.entity.Robot;
 
 
 public class PrintMotorState {
@@ -51,11 +54,20 @@ public class PrintMotorState {
 
 	public PrintMotorState() {
 
-		MindstormsNXT nxt = new MindstormsNXT("btspp://00165305B308");
+		// Get the robot instance.
+		Robot robot = RobotInfo.getRobot();
+		if (!(robot instanceof MindstormsNXT)) {
+			System.err.println("MindstormsNXT robot is required to run this sample code.");
+			return;
+		}
+
+		// Create a Mindstorms NXT robot object with one motor.
+		MindstormsNXT nxt = (MindstormsNXT) robot;
 		nxt.removeDifferentialWheels();
 		nxt.addExtension("MindstormsNXTExtension", Port.B);
 		nxt.connect();
 
+		// Get and print the motor status.
 		MindstormsNXTExtension ext = nxt.requestResource(MindstormsNXTExtension.class, this);
 		if (ext != null) {
 

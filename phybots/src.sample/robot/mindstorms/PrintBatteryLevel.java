@@ -37,6 +37,7 @@
 package robot.mindstorms;
 
 import com.phybots.Phybots;
+import com.phybots.entity.MindstormsNXT;
 import com.phybots.entity.PhysicalRobot;
 import com.phybots.task.MonitorBatteryLevel;
 
@@ -51,7 +52,15 @@ public class PrintBatteryLevel {
 	public PrintBatteryLevel() {
 
 		PhysicalRobot robot = RobotInfo.getRobot();
-		robot.connect();
+		if (robot.connect()) {
+			System.out.println("connection succeeded");
+		} else {
+			System.out.println("connection failed");
+			return;
+		}
+
+		MindstormsNXT.sendAck(robot.getConnector());
+
 		MonitorBatteryLevel monitor = new MonitorBatteryLevel();
 
 		if (monitor.assign(robot)) {

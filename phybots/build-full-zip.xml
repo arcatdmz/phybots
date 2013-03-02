@@ -13,6 +13,10 @@
 					includes="README.txt" fullpath="README_bluecove.txt" />
 			<zipfileset dir="${connector-bluecove.dir}"
 					includes="${connector-bluecove.file}" />
+			<zipfileset dir="${fantom-native.dir}"
+					includes="README.txt" fullpath="README_fantom.txt" />
+			<zipfileset dir="${fantom.dir}"
+					includes="${fantom-jar.name}" />
 
 			<!-- RXTX library for Windows x64 not bundled. -->
 			<!--
@@ -84,6 +88,10 @@
 					includes="README.txt" fullpath="library/README_bluecove.txt" />
 			<zipfileset dir="${connector-bluecove.dir}"
 					includes="${connector-bluecove.file}" prefix="library/" />
+			<zipfileset dir="${fantom-native.dir}"
+					includes="README.txt" fullpath="library/README_fantom.txt" />
+			<zipfileset dir="${fantom.dir}"
+					includes="${fantom-jar.name}" prefix="library/" />
 
 			<zipfileset dir="../connector/"
 					includes="README.txt" fullpath="library/README_connector.txt" />
