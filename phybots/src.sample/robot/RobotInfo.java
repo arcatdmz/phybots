@@ -42,7 +42,6 @@ import com.phybots.entity.MindstormsNXT;
 import com.phybots.entity.Noopy2;
 import com.phybots.entity.PhysicalRobot;
 
-
 public class RobotInfo {
 
 	public static PhysicalRobot getRobot() {
@@ -52,6 +51,7 @@ public class RobotInfo {
 		// return new NetTansor("http://192.168.10.3");
 		// return new MindstormsNXT("btspp://001653055D42");
 		return new MindstormsNXT(FantomConnector.queryIdentifiers()[0]);
+		// return new MindstormsNXT("btspp://00165307BF22");
 	}
 
 	public static Noopy2 getNoopyRobot() {

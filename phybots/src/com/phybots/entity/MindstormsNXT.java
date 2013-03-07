@@ -75,9 +75,169 @@ import jp.digitalmuseum.connector.Connector;
 public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 	private static final long serialVersionUID = -2489251030390060500L;
 
+	// ---
+	// Constants below are copied from iCommand,
+	// an open-source Java package to control NXT over Bluetooth connection.
+	//
+	// For detail, see http://lejos.sourceforge.net/p_technologies/nxt/icommand/icommand.php
+	// (though its development has been already suspended.)
+
+	// Command types constants. Indicates type of packet being sent or received.
+	public static byte DIRECT_COMMAND_REPLY = 0x00;
+	public static byte SYSTEM_COMMAND_REPLY = 0x01;
+	public static byte REPLY_COMMAND = 0x02;
+	public static byte DIRECT_COMMAND_NOREPLY = (byte)0x80; // Avoids ~100ms latency
+	public static byte SYSTEM_COMMAND_NOREPLY = (byte)0x81; // Avoids ~100ms latency
+
+	// System Commands:
+	public static byte OPEN_READ = (byte)0x80;
+	public static byte OPEN_WRITE = (byte)0x81;
+	public static byte READ = (byte)0x82;
+	public static byte WRITE = (byte)0x83;
+	public static byte CLOSE = (byte)0x84;
+	public static byte DELETE = (byte)0x85;
+	public static byte FIND_FIRST = (byte)0x86;
+	public static byte FIND_NEXT = (byte)0x87;
+	public static byte GET_FIRMWARE_VERSION = (byte)0x88;
+	public static byte OPEN_WRITE_LINEAR = (byte)0x89;
+	public static byte OPEN_READ_LINEAR = (byte)0x8A;
+	public static byte OPEN_WRITE_DATA = (byte)0x8B;
+	public static byte OPEN_APPEND_DATA = (byte)0x8C;
+	// Many commands could be hidden between 0x8D and 0x96!
+	public static byte BOOT = (byte)0x97;
+	public static byte SET_BRICK_NAME = (byte)0x98;
+	// public static byte MYSTERY_COMMAND = (byte)0x99;
+	// public static byte MYSTERY_COMMAND = (byte)0x9A;
+	public static byte GET_DEVICE_INFO = (byte)0x9B;
+	// commands could be hidden here...
+	public static byte DELETE_USER_FLASH = (byte)0xA0;
+	public static byte POLL_LENGTH = (byte)0xA1;
+	public static byte POLL = (byte)0xA2;
+
+	// Poll constants:
+	public static byte POLL_BUFFER = (byte)0x00;
+	public static byte HIGH_SPEED_BUFFER = (byte)0x01;
+
+	// Direct Commands
+	public static byte START_PROGRAM = 0x00;
+	public static byte STOP_PROGRAM = 0x01;
+	public static byte PLAY_SOUND_FILE = 0x02;
+	public static byte PLAY_TONE = 0x03;
+	public static byte SET_OUTPUT_STATE = 0x04;
+	public static byte SET_INPUT_MODE = 0x05;
+	public static byte GET_OUTPUT_STATE = 0x06;
+	public static byte GET_INPUT_VALUES = 0x07;
+	public static byte RESET_SCALED_INPUT_VALUE = 0x08;
+	public static byte MESSAGE_WRITE = 0x09;
+	public static byte RESET_MOTOR_POSITION = 0x0A;
+	public static byte GET_BATTERY_LEVEL = 0x0B;
+	public static byte STOP_SOUND_PLAYBACK = 0x0C;
+	public static byte KEEP_ALIVE = 0x0D;
+	public static byte LS_GET_STATUS = 0x0E;
+	public static byte LS_WRITE = 0x0F;
+	public static byte LS_READ = 0x10;
+	public static byte GET_CURRENT_PROGRAM_NAME = 0x11;
+	// public static byte MYSTERY_OPCODE = 0x12; // ????
+	public static byte MESSAGE_READ = 0x13;
+	// public static byte POSSIBLY_MORE_HIDDEN = 0x14; // ????
+
+	// Output state constants
+	// Mode:
+	/** Turn on the specified motor */
+	public static byte MOTORON = 0x01;
+	/** Use run/brake instead of run/float in PWM */
+	public static byte BRAKE = 0x02;
+	/** Turns on the regulation */
+	public static byte REGULATED = 0x04;
+
+	// Regulation Mode:
+	/** No regulation will be enabled */
+	public static byte REGULATION_MODE_IDLE = 0x00;
+	/** Power control will be enabled on specified output */
+	public static byte REGULATION_MODE_MOTOR_SPEED = 0x01;
+	/** Synchronization will be enabled (Needs enabled on two output) */
+	public static byte REGULATION_MODE_MOTOR_SYNC = 0x02;
+
+	// RunState:
+	/** Error */
+	public static byte MOTOR_RUN_STATE_ERROR = -1;
+	/** Output will be idle */
+	public static byte MOTOR_RUN_STATE_IDLE = 0x00;
+	/** Output will ramp-up */
+	public static byte MOTOR_RUN_STATE_RAMPUP = 0x10;
+	/** Output will be running */
+	public static byte MOTOR_RUN_STATE_RUNNING = 0x20;
+	/** Output will ramp-down */
+	public static byte MOTOR_RUN_STATE_RAMPDOWN = 0x40;
+
+	// Input Mode Constants
+	// PortType
+	/**  */
+	public static byte NO_SENSOR = 0x00;
+	/**  */
+	public static byte SWITCH = 0x01;
+	/**  */
+	public static byte TEMPERATURE = 0x02;
+	/**  */
+	public static byte REFLECTION = 0x03;
+	/**  */
+	public static byte ANGLE = 0x04;
+	/**  */
+	public static byte LIGHT_ACTIVE = 0x05;
+	/**  */
+	public static byte LIGHT_INACTIVE = 0x06;
+	/**  */
+	public static byte SOUND_DB = 0x07;
+	/**  */
+	public static byte SOUND_DBA = 0x08;
+	/**  */
+	public static byte CUSTOM = 0x09;
+	/**  */
+	public static byte LOWSPEED = 0x0A;
+	/**  */
+	public static byte LOWSPEED_9V = 0x0B;
+	/**  */
+	public static byte NO_OF_SENSOR_TYPES = 0x0C;
+
+	// PortMode
+	/**  */
+	public static byte RAWMODE = 0x00;
+	/**  */
+	public static byte BOOLEANMODE = 0x20;
+	/**  */
+	public static byte TRANSITIONCNTMODE = 0x40;
+	/**  */
+	public static byte PERIODCOUNTERMODE = 0x60;
+	/**  */
+	public static byte PCTFULLSCALEMODE = (byte)0x80;
+	/**  */
+	public static byte CELSIUSMODE = (byte)0xA0;
+	/**  */
+	public static byte FAHRENHEITMODE = (byte)0xC0;
+	/**  */
+	public static byte ANGLESTEPSMODE = (byte)0xE0;
+	/**  */
+	public static byte SLOPEMASK = 0x1F;
+	/**  */
+	public static byte MODEMASK = (byte)0xE0;
+
+	// Error code
+	public static final byte SPECIFIED_MAILBOX_QUEUE_IS_EMPTY = 0x40;
+
+	public static final byte TACHO_FOREVER = 0;
+
+	// Size of the LEGO robot.
 	final public static double WIDTH = 14;
 	final public static double HEIGHT = 14;
 
+	/**
+	 * Latency to wait for the reply.
+	 */
+	public static int latency = 30;
+
+	/**
+	 * Motor port
+	 */
 	public static enum Port {
 		A(0), B(1), C(2), D(3), ALL(0xff);
 		private int portNumber;
@@ -96,8 +256,6 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 			return null;
 		}
 	}
-
-	public static final byte TACHO_FOREVER = 0;
 
 	private static int instances = 0;
 	private MindstormsNXTDifferentialWheels dw;
@@ -216,6 +374,214 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 		extensions.add(extension);
 	}
 
+	/**
+	 * Starts a program on the NXT.
+	 * 
+	 * @param fileName the file name
+	 * @param connector
+	 */
+	public static void startProgram(String fileName, Connector connector) {
+		byte[] request = { DIRECT_COMMAND_NOREPLY, START_PROGRAM };
+		request = appendString(request, fileName);
+		write(request, connector);
+	}
+
+	/**
+	 * Forces the currently executing program to stop.
+	 * 
+	 * @param connector
+	 */
+	public static void stopProgram(Connector connector) {
+		byte[] request = { DIRECT_COMMAND_NOREPLY, STOP_PROGRAM };
+		write(request, connector);
+	}
+
+	/**
+	 * Name of current running program.
+	 * 
+	 * @param connector
+	 * @return the program name
+	 * @throws IOException 
+	 */
+	public static String getCurrentProgramName(Connector connector) {
+		write(new byte[]{
+			DIRECT_COMMAND_REPLY,
+			GET_CURRENT_PROGRAM_NAME
+		}, connector);
+		try {
+			byte[] reply = read(connector, 23);
+			return new StringBuffer(new String(reply)).delete(0, 2).toString();
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
+	/**
+	 * Find the first file on the NXT.
+	 * 
+	 * @param wildCard
+	 *            [filename].[extension], *.[extension], [filename].*, *.*
+	 * @return fileInfo object giving details of the file
+	 * @throws IOException 
+	 */
+	public static FileInfo findFirst(String wildCard, Connector connector) {
+
+		byte[] request = { SYSTEM_COMMAND_REPLY, FIND_FIRST };
+		request = appendString(request, wildCard);
+		write(request, connector);
+
+		byte[] reply;
+		try {
+			reply = read(connector, 28);
+		} catch (IOException e) {
+			return null;
+		}
+		FileInfo fileInfo = null;
+		if (reply[2] == 0 && reply.length == 28) {
+			StringBuffer name = new StringBuffer(new String(reply))
+					.delete(0, 4);
+			int lastPos = name.indexOf("\0");
+			if (lastPos < 0 || lastPos > 20) lastPos = 20;
+			name.delete(lastPos, name.length());
+			fileInfo = new FileInfo(name.toString());
+			fileInfo.fileHandle = reply[3];
+			fileInfo.fileSize = (0xFF & reply[24]) | ((0xFF & reply[25]) << 8)
+					| ((0xFF & reply[26]) << 16) | ((0xFF & reply[27]) << 24);
+		}
+		return fileInfo;
+	}
+
+	/**
+	 * Find the next file on the NXT
+	 * 
+	 * @param handle
+	 *            Handle number from the previous found file or from the Find
+	 *            First command.
+	 * @param connector
+	 * @return fileInfo object giving details of the file
+	 */
+	public static FileInfo findNext(byte handle, Connector connector) {
+
+		write(new byte[] { SYSTEM_COMMAND_REPLY, FIND_NEXT, handle }, connector);
+
+		byte[] reply;
+		try {
+			reply = read(connector, 28);
+		} catch (IOException e) {
+			return null;
+		}
+		FileInfo fileInfo = null;
+		if (reply[2] == 0 && reply.length == 28) {
+			StringBuffer name = new StringBuffer(new String(reply))
+					.delete(0, 4);
+			int lastPos = name.indexOf("\0");
+			if (lastPos < 0 || lastPos > 20) lastPos = 20;
+			name.delete(lastPos, name.length());
+			fileInfo = new FileInfo(name.toString());
+			fileInfo.fileHandle = reply[3];
+			fileInfo.fileSize = (0xFF & reply[24]) | ((0xFF & reply[25]) << 8)
+					| ((0xFF & reply[26]) << 16) | ((0xFF & reply[27]) << 24);
+		}
+		return fileInfo;
+	}
+
+	/**
+	 * Read message.
+	 * 
+	 * @param remoteInbox 0-9
+	 * @param localInbox 0-9
+	 * @param remove true clears the message from the remote inbox.
+	 * @param connector
+	 * @return the message
+	 */
+	public static String messageRead(byte remoteInbox, byte localInbox, boolean remove, Connector connector) {
+		write(new byte[]{
+			DIRECT_COMMAND_REPLY,
+			MESSAGE_READ,
+			remoteInbox,
+			localInbox,
+			(remove ? (byte) 1 : (byte) 0)
+		}, connector);
+		byte[] reply;
+		try {
+			reply = read(connector, 64);
+		} catch (IOException e) {
+			return null;
+		}
+		if (reply[2] == SPECIFIED_MAILBOX_QUEUE_IS_EMPTY
+				|| !checkStatusByte(reply)) {
+			return null;
+		}
+		int size = reply[4] & 0xFF;
+		if (size < 1 || size > 5 + reply.length || reply[4 + size] != 0) {
+			return null;
+		}
+		byte[] message = new byte[size - 1];
+		System.arraycopy(reply, 5, message, 0, size - 1);
+		return new String(message);
+	}
+
+	/**
+	 * Helper code to append a string and null terminator at the end of a
+	 * command request.
+	 * 
+	 * @param command the command
+	 * @param str the string to append
+	 * @return the concatenated command
+	 */
+	private static byte[] appendString(byte[] command, String str) {
+		byte[] buff = new byte[command.length + str.length() + 1];
+		for (int i = 0; i < command.length; i++)
+			buff[i] = command[i];
+		for (int i = 0; i < str.length(); i++)
+			buff[command.length + i] = (byte) str.charAt(i);
+		buff[command.length + str.length()] = 0;
+		return buff;
+	}
+
+	private static boolean checkStatusByte(byte[] reply) {
+		byte code = reply[2];
+		return code == 0;
+	}
+
+	/**
+	 * Sends a message to an inbox on the NXT.
+	 * For future reference, message size must be capped at 59 for USB.
+	 * A null terminator is automatically appended and should not be included in the message.
+	 *
+ 	 * @param message String to send.
+	 * @param inbox Inbox Number 0 - 9
+	 * @param connector
+	 */
+	public void messageWrite(byte[] message, byte inbox, Connector connector) throws IOException {
+		int len = message.length;
+		byte[] request = new byte[5 + len];
+		request[0] = DIRECT_COMMAND_NOREPLY;
+		request[1] = MESSAGE_WRITE;
+		request[2] = inbox;
+		request[3] = (byte)(len+1); // size includes null-terminator
+		System.arraycopy(message, 0, request, 4, len);
+		request[4+len] = 0;
+		write(request, connector);
+	}
+
+	/**
+	 * Plays a tone on NXT speaker. If a new tone is sent while the previous tone is playing,
+	 * the new tone command will stop the old tone command.
+	 * @param frequency - 100 to 2000?
+	 * @param duration - In milliseconds.
+	 */
+	public void playTone(int frequency, int duration, Connector connector) throws IOException {
+		write(new byte[] {
+				DIRECT_COMMAND_NOREPLY,
+				PLAY_TONE,
+				(byte)frequency,
+				(byte)(frequency>>>8),
+				(byte)duration,
+				(byte)(duration>>>8)},
+		connector);
+	}
+
 	protected boolean setOutputState(OutputState outputState) {
 		return setOutputState(outputState.port,
 				outputState.powerSetpoint, outputState.mode,
@@ -325,11 +691,14 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 				return;
 			}
 
-			// Wait for the latency and read the response.
+			// Wait for some latency.
+			try { Thread.sleep(latency); }
+			catch (InterruptedException e) { }
+
+			// Read the response.
 			try {
-				Thread.sleep(30);
 				ret = read(connector, 25);
-			} catch (Exception e) {
+			} catch (IOException e) {
 				outputState.status = -1;
 				return;
 			}
@@ -371,13 +740,13 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 				return false;
 			}
 
+			// Wait for some latency.
+			try { Thread.sleep(latency); }
+			catch (InterruptedException e) { }
+
 			// Wait for the latency and read the response.
-			try {
-				Thread.sleep(100);
-				ret = read(connector, 7);
-			} catch (Exception e) {
-				return false;
-			}
+			try { ret = read(connector, 7); }
+			catch (IOException e) { return false; }
 		}
 
 		// Get the result.
@@ -447,8 +816,8 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 					DIRECT_COMMAND_REPLY,
 					GET_BATTERY_LEVEL}, getConnector())) {
 
-				// Wait for ~100ms latency.
-				try { Thread.sleep(100); }
+				// Wait for some latency.
+				try { Thread.sleep(latency); }
 				catch (InterruptedException e) { }
 
 				// Get the result.
@@ -662,156 +1031,6 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 		}
 	}
 
-	// ---
-	// Constants below are copied from iCommand,
-	// an open-source Java package to control NXT over Bluetooth connection.
-	//
-	// For detail, see http://lejos.sourceforge.net/p_technologies/nxt/icommand/icommand.php
-	// (though its development has been already suspended.)
-
-	// Command types constants. Indicates type of packet being sent or received.
-	public static byte DIRECT_COMMAND_REPLY = 0x00;
-	public static byte SYSTEM_COMMAND_REPLY = 0x01;
-	public static byte REPLY_COMMAND = 0x02;
-	public static byte DIRECT_COMMAND_NOREPLY = (byte)0x80; // Avoids ~100ms latency
-	public static byte SYSTEM_COMMAND_NOREPLY = (byte)0x81; // Avoids ~100ms latency
-
-	// System Commands:
-	public static byte OPEN_READ = (byte)0x80;
-	public static byte OPEN_WRITE = (byte)0x81;
-	public static byte READ = (byte)0x82;
-	public static byte WRITE = (byte)0x83;
-	public static byte CLOSE = (byte)0x84;
-	public static byte DELETE = (byte)0x85;
-	public static byte FIND_FIRST = (byte)0x86;
-	public static byte FIND_NEXT = (byte)0x87;
-	public static byte GET_FIRMWARE_VERSION = (byte)0x88;
-	public static byte OPEN_WRITE_LINEAR = (byte)0x89;
-	public static byte OPEN_READ_LINEAR = (byte)0x8A;
-	public static byte OPEN_WRITE_DATA = (byte)0x8B;
-	public static byte OPEN_APPEND_DATA = (byte)0x8C;
-	// Many commands could be hidden between 0x8D and 0x96!
-	public static byte BOOT = (byte)0x97;
-	public static byte SET_BRICK_NAME = (byte)0x98;
-	// public static byte MYSTERY_COMMAND = (byte)0x99;
-	// public static byte MYSTERY_COMMAND = (byte)0x9A;
-	public static byte GET_DEVICE_INFO = (byte)0x9B;
-	// commands could be hidden here...
-	public static byte DELETE_USER_FLASH = (byte)0xA0;
-	public static byte POLL_LENGTH = (byte)0xA1;
-	public static byte POLL = (byte)0xA2;
-
-	// Poll constants:
-	public static byte POLL_BUFFER = (byte)0x00;
-	public static byte HIGH_SPEED_BUFFER = (byte)0x01;
-
-	// Direct Commands
-	public static byte START_PROGRAM = 0x00;
-	public static byte STOP_PROGRAM = 0x01;
-	public static byte PLAY_SOUND_FILE = 0x02;
-	public static byte PLAY_TONE = 0x03;
-	public static byte SET_OUTPUT_STATE = 0x04;
-	public static byte SET_INPUT_MODE = 0x05;
-	public static byte GET_OUTPUT_STATE = 0x06;
-	public static byte GET_INPUT_VALUES = 0x07;
-	public static byte RESET_SCALED_INPUT_VALUE = 0x08;
-	public static byte MESSAGE_WRITE = 0x09;
-	public static byte RESET_MOTOR_POSITION = 0x0A;
-	public static byte GET_BATTERY_LEVEL = 0x0B;
-	public static byte STOP_SOUND_PLAYBACK = 0x0C;
-	public static byte KEEP_ALIVE = 0x0D;
-	public static byte LS_GET_STATUS = 0x0E;
-	public static byte LS_WRITE = 0x0F;
-	public static byte LS_READ = 0x10;
-	public static byte GET_CURRENT_PROGRAM_NAME = 0x11;
-	// public static byte MYSTERY_OPCODE = 0x12; // ????
-	public static byte MESSAGE_READ = 0x13;
-	// public static byte POSSIBLY_MORE_HIDDEN = 0x14; // ????
-
-	// Custom leJOS NXJ commands:
-	// public static byte NXJ_DISCONNECT = 0x20;
-	// public static byte NXJ_DEFRAG = 0x21;
-
-	// Output state constants
-	// Mode:
-	/** Turn on the specified motor */
-	public static byte MOTORON = 0x01;
-	/** Use run/brake instead of run/float in PWM */
-	public static byte BRAKE = 0x02;
-	/** Turns on the regulation */
-	public static byte REGULATED = 0x04;
-
-	// Regulation Mode:
-	/** No regulation will be enabled */
-	public static byte REGULATION_MODE_IDLE = 0x00;
-	/** Power control will be enabled on specified output */
-	public static byte REGULATION_MODE_MOTOR_SPEED = 0x01;
-	/** Synchronization will be enabled (Needs enabled on two output) */
-	public static byte REGULATION_MODE_MOTOR_SYNC = 0x02;
-
-	// RunState:
-	/** Error */
-	public static byte MOTOR_RUN_STATE_ERROR = -1;
-	/** Output will be idle */
-	public static byte MOTOR_RUN_STATE_IDLE = 0x00;
-	/** Output will ramp-up */
-	public static byte MOTOR_RUN_STATE_RAMPUP = 0x10;
-	/** Output will be running */
-	public static byte MOTOR_RUN_STATE_RUNNING = 0x20;
-	/** Output will ramp-down */
-	public static byte MOTOR_RUN_STATE_RAMPDOWN = 0x40;
-
-	// Input Mode Constants
-	// PortType
-	/**  */
-	public static byte NO_SENSOR = 0x00;
-	/**  */
-	public static byte SWITCH = 0x01;
-	/**  */
-	public static byte TEMPERATURE = 0x02;
-	/**  */
-	public static byte REFLECTION = 0x03;
-	/**  */
-	public static byte ANGLE = 0x04;
-	/**  */
-	public static byte LIGHT_ACTIVE = 0x05;
-	/**  */
-	public static byte LIGHT_INACTIVE = 0x06;
-	/**  */
-	public static byte SOUND_DB = 0x07;
-	/**  */
-	public static byte SOUND_DBA = 0x08;
-	/**  */
-	public static byte CUSTOM = 0x09;
-	/**  */
-	public static byte LOWSPEED = 0x0A;
-	/**  */
-	public static byte LOWSPEED_9V = 0x0B;
-	/**  */
-	public static byte NO_OF_SENSOR_TYPES = 0x0C;
-
-	// PortMode
-	/**  */
-	public static byte RAWMODE = 0x00;
-	/**  */
-	public static byte BOOLEANMODE = 0x20;
-	/**  */
-	public static byte TRANSITIONCNTMODE = 0x40;
-	/**  */
-	public static byte PERIODCOUNTERMODE = 0x60;
-	/**  */
-	public static byte PCTFULLSCALEMODE = (byte)0x80;
-	/**  */
-	public static byte CELSIUSMODE = (byte)0xA0;
-	/**  */
-	public static byte FAHRENHEITMODE = (byte)0xC0;
-	/**  */
-	public static byte ANGLESTEPSMODE = (byte)0xE0;
-	/**  */
-	public static byte SLOPEMASK = 0x1F;
-	/**  */
-	public static byte MODEMASK = (byte)0xE0;
-
 	/**
 	 * Container for holding the output state values.
 	 */
@@ -873,5 +1092,30 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 					rotationCount, lineSeparator));
 			return sb.toString();
 		}
+	}
+
+	/**
+	 * Structure that gives information about a file.
+	 */
+	public static class FileInfo {
+		
+		/**
+		 * The name of the file - up to 20 characters.
+		 */
+		public String fileName;
+		
+		/**
+		 * The handle for accessing the file.
+		 */
+		public byte fileHandle;
+		
+		/**
+		 * The size of the file in bytes.
+		 */
+		public int fileSize;
+		
+		public FileInfo(String fileName) {
+			this.fileName = fileName;
+		}	
 	}
 }

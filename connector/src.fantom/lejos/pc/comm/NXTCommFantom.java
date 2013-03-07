@@ -47,9 +47,6 @@ public class NXTCommFantom {
 		// Load the copied library.
 		try {
 			System.load(file.getAbsolutePath());
-			System.out.println(String.format(
-					"Loaded jfantom library: %s",
-					file.getAbsolutePath()));
 		} catch (Exception e) {
 			System.err.println(
 					String.format(

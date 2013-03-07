@@ -5,7 +5,7 @@
 	<import file="../connector/build.xml"/>
 
 	<!-- ****Properties**** -->
-	<property name="phybots.version" value="1.0.1" />
+	<property name="phybots.version" value="1.0.2" />
 	<property name="phybots.mainClass" value="com.phybots.Phybots" />
 
 	<!-- Dependent class pathes -->

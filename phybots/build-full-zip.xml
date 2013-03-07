@@ -5,7 +5,7 @@
 	<import file="./build-full-javadoc.xml"/>
 
 	<!-- Zip -->
-	<target name="phybots-full-zip">
+	<target name="phybots-full-zip" depends="javadoc-zip">
 		<mkdir dir="${phybots-dist.dir}" />
 		<zip destfile="${phybots-dist.dir}phybots-full-${phybots.version}.zip" filesonly="true">
 
@@ -77,7 +77,7 @@
 	</target>
 
 	<!-- Zip -->
-	<target name="phybots-p5-zip">
+	<target name="phybots-p5-zip" depends="javadoc-p5">
 		<mkdir dir="${phybots-dist.dir}" />
 		<zip destfile="${phybots-dist.dir}PhybotsP5.zip" filesonly="true">
 
