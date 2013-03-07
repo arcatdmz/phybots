@@ -59,21 +59,10 @@ public class PrintFiles {
 		}
 
 		// List files.
-		FileInfo motorControl = null;
 		FileInfo fi = MindstormsNXT.findFirst("*.*", robot.getConnector());
 		while (fi != null) {
 			System.out.println(fi.fileName);
-			if ("MotorControl22.rxe".equals(fi.fileName)) {
-				motorControl = fi;
-			}
 			fi = MindstormsNXT.findNext(fi.fileHandle, robot.getConnector());
-		}
-
-		// When the motor control program is found, run it.
-		if (motorControl != null) {
-			MindstormsNXT.startProgram(
-					motorControl.fileName,
-					robot.getConnector());
 		}
 	}
 

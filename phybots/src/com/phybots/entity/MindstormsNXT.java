@@ -410,7 +410,10 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 		}, connector);
 		try {
 			byte[] reply = read(connector, 23);
-			return new StringBuffer(new String(reply)).delete(0, 2).toString();
+			StringBuffer sb = new StringBuffer(new String(reply));
+			sb.delete(0, 3);
+			sb.delete(sb.length() - 2, sb.length());
+			return sb.toString();
 		} catch (IOException e) {
 			return null;
 		}
@@ -553,7 +556,7 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 	 * @param inbox Inbox Number 0 - 9
 	 * @param connector
 	 */
-	public void messageWrite(byte[] message, byte inbox, Connector connector) throws IOException {
+	public static void messageWrite(byte[] message, byte inbox, Connector connector) {
 		int len = message.length;
 		byte[] request = new byte[5 + len];
 		request[0] = DIRECT_COMMAND_NOREPLY;
@@ -561,7 +564,7 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 		request[2] = inbox;
 		request[3] = (byte)(len+1); // size includes null-terminator
 		System.arraycopy(message, 0, request, 4, len);
-		request[4+len] = 0;
+		request[4 + len] = 0;
 		write(request, connector);
 	}
 
@@ -571,7 +574,7 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 	 * @param frequency - 100 to 2000?
 	 * @param duration - In milliseconds.
 	 */
-	public void playTone(int frequency, int duration, Connector connector) throws IOException {
+	public void playTone(int frequency, int duration, Connector connector) {
 		write(new byte[] {
 				DIRECT_COMMAND_NOREPLY,
 				PLAY_TONE,
