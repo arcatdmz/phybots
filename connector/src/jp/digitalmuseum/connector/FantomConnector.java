@@ -108,7 +108,7 @@ public class FantomConnector extends ConnectorAbstractImpl {
 		@Override
 		public int read() throws IOException {
 			byte[] data = new byte[1];
-			if (fantom.readData(data, 0, 1) < 0) {
+			if (fantom.readData(data, 0, 1) < 1) {
 				return -1;
 			}
 			else return data[0];

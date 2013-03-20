@@ -779,15 +779,22 @@ public class MindstormsNXT extends PhysicalRobotAbstractImpl {
 
 	protected static byte[] read(final Connector connector, int length) throws IOException {
 		final InputStream inStream = connector.getInputStream();
-		byte[] reply = null;
 		if (connector instanceof BluetoothConnector) {
 			length = (inStream.read() & 0xff) | ((inStream.read() & 0xff << 8));
 		}
-		reply = new byte[length];
-		while (length > 0) {
-			length -= inStream.read(reply,
-					reply.length-length, length);
+		byte[] buffer = new byte[length];
+		int read = 0, totalRead = 0;
+		while (totalRead < length) {
+			read = inStream.read(
+					buffer, totalRead, length - totalRead);
+			if (read >= 0) {
+				totalRead += read;
+			} else {
+				break;
+			}
 		}
+		byte[] reply = new byte[totalRead];
+		System.arraycopy(buffer, 0, reply, 0, totalRead);
 		return reply;
 	}
 

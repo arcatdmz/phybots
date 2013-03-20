@@ -13,13 +13,15 @@ public class FantomDiscovery {
 			System.out.print("connecting to ");
 			System.out.println(connectionString);
 			FantomConnector connector = new FantomConnector(connectionString);
-			getFirmware(connector);
+			getFirmware(connector, 7);
+			getFirmware(connector, 3);
+			getFirmware(connector, 10);
 		}
 		// BluetoothConnector connector = new BluetoothConnector("btspp://001653055D42");
 		// getFirmware(connector);
 	}
 
-	public static void getFirmware(Connector connector) {
+	public static void getFirmware(Connector connector, int len) {
 		connector.connect();
 		System.out.print("sending command: ");
 		if (!connector.write(new byte[] {
@@ -32,14 +34,16 @@ public class FantomDiscovery {
 		}
 		System.out.print("waiting for reply: ");
 		try {
-			Thread.sleep(100);
+			Thread.sleep(1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		byte[] data = new byte[7];
-		if (connector.read(data) < 0) {
+		byte[] data = new byte[len];
+		int read;
+		if ((read = connector.read(data)) < 0) {
 			System.out.println("failed");
 		} else {
+			System.out.println(read);
 			System.out.print("succeeded,");
 			for (int i = 0; i < data.length; i ++) {
 				System.out.print(" ");
@@ -47,6 +51,8 @@ public class FantomDiscovery {
 			}
 			System.out.println();
 		}
+		while ((read = connector.read()) > 0)
+			System.out.println(read);
 		connector.disconnect();
 	}
 }
