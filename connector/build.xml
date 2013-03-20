@@ -7,7 +7,7 @@
 	<!-- ****Properties**** -->
 
 	<!-- Software version -->
-	<property name="connector-version" value="1.0.5" />
+	<property name="connector-version" value="1.0.6" />
 
 	<!-- Dependent class pathes -->
 	<property name="connector-bluecove.dir" value="../connector/lib/bluecove/" />

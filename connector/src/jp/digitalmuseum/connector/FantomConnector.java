@@ -51,8 +51,6 @@ public class FantomConnector extends ConnectorAbstractImpl {
 
 	public FantomConnector(String con) {
 		fantom = new NXTCommFantom();
-		setInputStream(new FantomInputStream());
-		setOutputStream(new FantomOutputStream());
 		parseConnectionString(con);
 	}
 
@@ -86,7 +84,12 @@ public class FantomConnector extends ConnectorAbstractImpl {
 		if (fantom.isConnected()) {
 			return true;
 		}
-		return fantom.open(portName);
+		if (fantom.open(portName)) {
+			setInputStream(new FantomInputStream());
+			setOutputStream(new FantomOutputStream());
+			return true;
+		}
+		return false;
 	}
 
 	@Override
